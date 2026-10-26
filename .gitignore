@@ -1,0 +1,5 @@
+.DS_Store
+*.pkg
+*.zip
+*.log
+__pycache__/

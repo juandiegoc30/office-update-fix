@@ -1,0 +1,13 @@
+name: Check
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Shell syntax and isolated recovery tests
+        run: |
+          bash -n scripts/office-update-fix.sh Office-Update-Fix.command tests/test.sh
+          bash tests/test.sh
+      - name: Site links
+        run: python3 tests/site.py
