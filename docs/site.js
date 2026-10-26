@@ -46,13 +46,16 @@ if (imageDialog) {
 const sections = [...document.querySelectorAll('.guide-section')];
 const navigation = [...document.querySelectorAll('[data-nav]')];
 if (sections.length && 'IntersectionObserver' in window) {
+  const visibleSections = new Set();
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) {
-      if (!entry.isIntersecting) continue;
-      for (const link of navigation) {
-        if (link.hash === `#${entry.target.id}`) link.setAttribute('aria-current', 'location');
-        else link.removeAttribute('aria-current');
-      }
+      if (entry.isIntersecting) visibleSections.add(entry.target);
+      else visibleSections.delete(entry.target);
+    }
+    const activeSection = sections.find(section => visibleSections.has(section));
+    for (const link of navigation) {
+      if (activeSection && link.hash === `#${activeSection.id}`) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
     }
   }, {rootMargin: '-70px 0px -55% 0px', threshold: 0});
   sections.forEach(section => observer.observe(section));
